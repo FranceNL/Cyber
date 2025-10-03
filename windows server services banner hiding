@@ -1,0 +1,46 @@
+Hiding Banners for IIS
+Internet Information Services (IIS) is a common target. You can hide the server banner through the IIS Manager, the Windows Registry, or by modifying the web.config file.
+
+Using IIS Manager:
+Open the IIS Manager on your server.
+Navigate to your server name in the left-hand connections pane.
+Double-click on the HTTP Response Headers feature in the middle pane.
+Select the Server header and click Remove in the right-hand actions pane.
+You can also remove the X-Powered-By header, which often reveals the ASP.NET version.
+
+Using the Windows Registry:
+Open the Registry Editor (regedit.exe).
+Navigate to HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\HTTP\Parameters.
+Create a new DWORD (32-bit) Value named DisableServerHeader.
+Set the value to 1.
+Restart the HTTP service using net stop http and net start http in an elevated command prompt or PowerShell.
+
+FTP (File Transfer Protocol)
+The banner for FTP on a Windows Server is typically part of the IIS (Internet Information Services) FTP service.
+
+Using IIS Manager:
+Open IIS Manager.
+Navigate to the specific FTP site.
+In the main pane, double-click FTP Messages.
+Check the box for Suppress default banner.
+You can then enter a custom banner message if you want, or leave it blank to remove the banner entirely. This action modifies the response from "220 Microsoft FTP Service" to simply "220."
+This is a straightforward change that significantly reduces the information leakage.
+
+SMTP (Simple Mail Transfer Protocol)
+Hiding the SMTP banner is important because it often reveals the mail server software and its version (e.g., Microsoft Exchange, Postfix).
+
+Using PowerShell (for Exchange): For modern Exchange servers, you can modify the banner using the Exchange Management Shell. The Set-ReceiveConnector cmdlet is used for this.
+To change the banner, use the following command:
+PowerShell
+    Set-ReceiveConnector -Identity "YourReceiveConnectorName" -Banner "220 YourBannerText"
+Note: The banner text must start with the SMTP response code 220. For example, 220 mail.yourdomain.com.
+Other SMTP Servers: If you're using a different SMTP service, you'll need to consult its specific documentation. Most mail server applications have a configuration file or a dedicated management console setting to change or suppress the initial greeting.
+
+SSH (Secure Shell)
+The SSH banner is an important security point because it often includes the OpenSSH version, which can have known vulnerabilities. On Windows Server, you're likely using the built-in OpenSSH server.
+
+Modify the Configuration File:
+Go to the OpenSSH configuration directory, usually located at %ProgramData%\ssh.
+Open the sshd_config file in a text editor like Notepad.
+You can add or uncomment a Banner directive, but this simply displays a message in addition to the default banner.
+To truly hide or change the version information, you would need to use a more advanced method, as it is a hardcoded part of the SSH protocol handshake. One method is to use a third-party tool or modify the binary itself, which is not recommended as it's an unsupported and potentially unstable change.
