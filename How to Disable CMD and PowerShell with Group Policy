@@ -1,0 +1,24 @@
+1. Disable Command Prompt (CMD)
+You can disable CMD using a straightforward administrative template.
+Open the Group Policy Management Console.
+Create or edit a GPO that applies to your non-admin users.
+Navigate to User Configuration > Policies > Administrative Templates > System.
+Find the policy setting "Prevent access to the command prompt".
+Set this policy to Enabled. This will prevent users from running cmd.exe.
+You can also choose whether to disable script processing for .bat and .cmd files.
+
+2. Disable PowerShell
+Disabling PowerShell for non-admins is a bit different as there isn't a dedicated "Prevent access to PowerShell" policy. Instead, you'll use a Software Restriction Policy or the "Don't run specified Windows applications" policy.
+Using Software Restriction Policies (Recommended): This method is more robust as it blocks the application based on its file path or a cryptographic hash, preventing users from simply renaming the executable to bypass the restriction.
+In the same GPO, navigate to User Configuration > Policies > Windows Settings > Security Settings > Software Restriction Policies.
+Right-click and select New Software Restriction Policies.
+Under Additional Rules, right-click and create a New Path Rule.
+Browse to the location of powershell.exe (usually C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe) and powershell_ise.exe.
+Set the Security level to Disallowed.
+
+Excluding Administrators 🛑
+To allow administrators to use these tools, you must apply a GPO Security Filter or use Delegation. This ensures the policy applies only to the user group you want to restrict.
+In the Group Policy Management Console, select the GPO you just created.
+In the Delegation tab, click Advanced.
+Add the Administrators group (or a specific security group for your admins).
+For this group, set the Apply group policy permission to Deny. This will prevent the policy from applying to any user who is a member of that group.
