@@ -1,0 +1,44 @@
+1. Protect Privileged Accounts 🛡️
+This is your top priority because attackers will immediately try to compromise accounts with the highest privileges.
+
+Change Passwords: Immediately reset the passwords for the Domain Admins, Enterprise Admins, and Schema Admins groups. Use long, complex passphrases (20+ characters) and do not reuse them. This is a critical step to invalidate any credentials that may have already been stolen.
+
+Limit Admin Logons: In Group Policy, restrict privileged accounts from logging on to ordinary user workstations or servers. This helps contain the blast radius of a credential theft attack, as an attacker can't use a stolen privileged credential on a compromised host to move laterally.
+
+Disable Unnecessary Accounts: Disable any service accounts or user accounts that are no longer in use, especially those that have administrative privileges.
+
+2. Isolate Domain Controllers 🔒
+Domain Controllers (DCs) are the crown jewels of your network. Attackers will try to connect to them directly.
+
+Review Firewall Rules: On each domain controller, verify and harden the Windows Firewall. Only allow necessary inbound traffic from other domain controllers, secure jump servers, and approved administrative workstations. Block all other inbound connections.
+
+Restrict RDP Access: Limit Remote Desktop Protocol (RDP) access to DCs to only the most trusted administrative accounts and jump servers. The fewer systems that can connect, the smaller the attack surface.
+
+3. Harden Authentication and Protocols 🔑
+Many common attacks, such as pass-the-hash and Kerberoasting, exploit weak or legacy authentication protocols.
+
+Disable Legacy Protocols: If possible, disable Server Message Block (SMBv1) and older versions of the New Technology LAN Manager (NTLM). These are known to be vulnerable to credential relay and brute-force attacks.
+
+Enable LDAP Signing: Configure the domain controllers to require LDAP signing. This protects against man-in-the-middle attacks that could be used to intercept and alter LDAP communications.
+
+4. Implement Quick Wins with Group Policy 📝
+Use Group Policy to enforce security settings across the domain quickly. Focus on settings that have an immediate effect.
+
+Account Lockout Policy: Configure a strict account lockout policy. Set a low threshold for failed login attempts (e.g., 5 attempts) to prevent brute-force attacks on user accounts, particularly those with administrative privileges.
+
+Strong Password Policy: Reinforce your default domain password policy to require longer, more complex passwords (if you can't implement Fine-Grained Password Policies in time).
+
+Kerberos Pre-authentication: Ensure that Kerberos pre-authentication is enabled for all user accounts to prevent AS-REP roasting attacks, where an attacker can request a Kerberos ticket for a user without a pre-authentication step.
+
+5. Start Monitoring and Logging 🕵️
+Even with the best preventative measures, you need to be able to detect an attack in progress.
+
+Enable Advanced Auditing: Enable advanced audit policies for critical actions. At a minimum, focus on "Logon/Logoff" and "Account Management" events (e.g., failed logins, password changes, new account creations). These logs can provide early indicators of compromise.
+
+Quick Scan for Anomalies: Do a quick check for common signs of a compromised Active Directory, such as:
+
+New accounts or groups that shouldn't exist.
+
+Unexpected changes in privileged group membership.
+
+Services running under privileged accounts that shouldn't be.
