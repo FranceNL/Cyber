@@ -1,0 +1,35 @@
+**1. Initial Setup & Baseline Security**
+
+- **Apply Latest Updates**: Ensure all security patches are installed.
+- **Disable Unused Services**: Use `Get-WindowsFeature` to identify and remove unnecessary roles.
+- **Rename or Disable Default Administrator Account**: Prevent brute-force attacks.
+
+**2. Network & Firewall Hardening**
+
+- **Enable Windows Defender Firewall**: Configure inbound/outbound rules.
+- **Disable SMBv1**: Prevent legacy protocol vulnerabilities (`Disable-WindowsOptionalFeature -Online -FeatureName SMB1Protocol`).
+- **Restrict Remote Access**: Limit RDP access and enforce Network Level Authentication (NLA).
+
+**3. Authentication & Access Control**
+
+- **Enforce Strong Password Policies**: Use Group Policy (`gpedit.msc`).
+- **Implement Multi-Factor Authentication (MFA)**: Especially for privileged accounts.
+- **Use Least Privilege Principle**: Restrict admin rights and enforce role-based access.
+
+**4. Logging & Monitoring**
+
+- **Enable Audit Logging**: Track login attempts, privilege escalations, and system changes.
+- **Use SIEM Solutions**: Integrate with Microsoft Defender for Identity or Azure Sentinel.
+- **Monitor Event Logs**: Regularly review logs for anomalies (`Event Viewer`).
+
+**5. Advanced Security Measures**
+
+- **Enable Secure Boot & TPM**: Protect against firmware-level attacks.
+- **Implement BitLocker Encryption**: Secure sensitive data.
+- **Harden Active Directory**: Disable NTLM, enforce Kerberos authentication.
+
+**6. Regular Security Assessments**
+
+- **Run Security Baselines**: Use [Microsoft Security Compliance Toolkit](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/hh831360%28v=ws.11%29).
+- **Perform Vulnerability Scans**: Use tools like Nessus or Microsoft Defender ATP.
+- **Conduct Penetration Testing**: Simulate attacks to identify weaknesses
