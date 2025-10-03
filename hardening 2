@@ -1,0 +1,25 @@
+- **Initial Security Checks & Basic Configuration (Approx. 3 minutes):**
+    1. **Windows Firewall:** Ensure Windows Firewall is **enabled** and configured to allow necessary AD DS traffic (this is usually done automatically during AD DS installation, but verify). 
+        
+        Inbound rules
+        
+        - **Allowing "Any" or "All" Traffic:** This is the absolute worst. Any rule that allows all inbound connections (e.g., source IP "Any," destination port "Any") effectively bypasses the firewall's purpose and exposes the server to all internet threats.
+        - **Open Ports for Unnecessary Services:**
+            - **RDP (Port 3389) open to the internet:** This is a classic and highly targeted vulnerability. Brute-force attacks and exploitation of RDP vulnerabilities (even patched ones, given 2012 R2's EOL) are common. RDP should ideally be restricted to specific, trusted IP addresses or accessed via a VPN.
+            - **SMB (Ports 139, 445) open to the internet:** Server Message Block (SMB) is used for file and printer sharing. Exposing it directly to the internet is extremely dangerous and can lead to ransomware attacks (like WannaCry, NotPetya) and data breaches.
+            - **HTTP/HTTPS (Ports 80, 443) for non-web servers:** If the server isn't hosting a public website, these ports should not be open to the internet.
+            - **SQL Server (Port 1433) open to the internet:** Database servers should be protected by multiple layers of security and never directly exposed to the internet.
+            - **Legacy Services:** Any services that are no longer in use or are inherently insecure (e.g., NetBIOS over TCP/IP, FTP if not secured with FTPS) should have their ports blocked.
+        - **Broad IP Address Ranges:** Allowing connections from wide IP ranges (e.g., an entire subnet when only a few specific IPs need access) increases the attack surface.
+        - **Unnecessary Protocols:** Enabling protocols that are not required for the server's function (e.g., ICMP when not troubleshooting) can open up vectors for information gathering or attack.
+        
+        Outbound Rules
+        
+        - **Allowing "Any" Outbound Traffic:** This enables malware to "call home," exfiltrate data, or download additional malicious components without being blocked by the firewall.
+        - **Unrestricted DNS/NTP:** While some outbound DNS/NTP is necessary, allowing connections to any DNS/NTP server can allow for DNS poisoning or communication with malicious time servers. Restrict these to trusted internal or well-known external servers.
+        - **Unrestricted HTTP/HTTPS Outbound:** If the server doesn't need to access the internet for updates or specific services, outbound HTTP/HTTPS should be restricted to only necessary destinations.
+    2. **Windows Updates:** Immediately check for and install critical Windows Updates. (This is ongoing, but initiate it).
+    3. **Administrator Account Renaming/Disabling:**
+        - **Rename the built-in Administrator account:** Open "Active Directory Users and Computers" -> "yourdomain.local" -> "Users" container. Right-click "Administrator" -> "Rename." Choose a non-obvious name.
+        - **Create a new dedicated administrative account:** Create a new user, add it to the "Domain Admins" group, and log in with this new account for daily administration. **Never use the renamed built-in Administrator account for daily tasks.**
+        - **Consider disabling the renamed built-in Administrator account:** Once you have a new dedicated admin account, you can disable the renamed built-in one if you wish to further restrict its use.
