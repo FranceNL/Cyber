@@ -1,0 +1,56 @@
+FTP (File Transfer Protocol)
+The primary security concern with standard FTP is that it transmits data and credentials in plain text.
+
+Enforce FTPS (FTP over SSL/TLS): Always use FTPS, which encrypts both the control channel (commands and authentication) and the data channel. In the IIS Manager, navigate to the FTP site, open FTP SSL Settings, and set the SSL policy to Require SSL. This forces all clients to use an encrypted connection.
+
+
+
+Use Strong Authentication: Disable anonymous access and require user accounts with strong passwords or, even better, use client certificates.
+
+Disable Legacy Protocols: Ensure that the FTP service only uses modern TLS protocols (e.g., TLS 1.2 or later) and disables older, vulnerable versions like TLS 1.0/1.1 and SSLv3. This is typically configured in the Windows Registry under the Schannel settings.
+
+
+Hide Banners: In the IIS Manager, under FTP Messages, you can enable the Suppress default banner option to prevent the server from revealing its software version.
+
+SMTP (Simple Mail Transfer Protocol)
+SMTP is used for sending email, and like FTP, it can transmit data in plain text.
+
+Enforce TLS/SSL: For mail clients, ensure they are configured to use SMTP over TLS. This typically uses a different port, like 587, and requires a valid SSL/TLS certificate on the mail server. This encrypts the connection between the client and the server.
+
+
+Restrict IP Addresses: Configure the SMTP service to only accept connections from trusted, authorized IP addresses, such as your company's network or specific application servers. This prevents unauthorized relaying, a common security issue that spammers exploit.
+
+
+Disable Open Relays: Configure the SMTP server to only relay mail for authenticated users. An "open relay" allows anyone to send mail through your server, making it a target for spammers.
+
+Implement Authentication: Require authentication for all outgoing mail. This ensures that only legitimate users can send emails from your domain.
+
+
+SSH (Secure Shell)
+On Windows Server, SSH is typically provided by the built-in OpenSSH server.
+
+Disable Password Authentication: The most critical step is to disable password-based logins and enforce key-based authentication. This is far more secure as it relies on cryptographic keys instead of passwords, which can be brute-forced.
+
+In the sshd_config file (usually located at %ProgramData%\ssh\), set PasswordAuthentication to no.
+
+Limit User Access: Use the AllowUsers or AllowGroups directives in the sshd_config file to specify exactly which user accounts or security groups are permitted to connect via SSH.
+
+Change Default Port: Move the SSH service from its default port (22) to a non-standard port. This doesn't make the service more secure but makes it less visible to automated port scans.
+
+Disable Remote Root Logins: Do not allow the local Administrator account to log in directly via SSH. Instead, use a standard user account and then elevate privileges if necessary.
+
+HTTP and HTTPS
+Securing web services on Windows Server is typically done through IIS (Internet Information Services).
+
+Redirect all HTTP traffic to HTTPS: Do not run a public-facing website on HTTP. In IIS, configure a URL Rewrite rule to automatically redirect all incoming HTTP traffic on port 80 to the HTTPS equivalent on port 443. This ensures all communication is encrypted.
+
+
+Enforce Strong TLS Protocols and Ciphers: Disable all older, insecure protocols (like SSL 2.0/3.0, TLS 1.0, and TLS 1.1) and enable only modern, secure versions like TLS 1.2 and TLS 1.3. This is done by modifying the Windows Registry under HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL. You should also configure a strong cipher suite to use modern cryptographic algorithms.
+
+
+Install a Trusted SSL/TLS Certificate: Purchase a certificate from a trusted Certificate Authority (CA) and bind it to your website in IIS. This is non-negotiable for any website that handles sensitive data.
+
+Hide Banners: Configure IIS to suppress the Server and X-Powered-By headers. This can be done in the HTTP Response Headers section of your website in IIS Manager.
+
+
+Sources
